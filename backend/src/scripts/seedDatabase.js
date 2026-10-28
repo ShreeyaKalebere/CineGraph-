@@ -54,8 +54,8 @@ const MERGE_MOVIES = `
       m.overview = row.overview,
       m.rating = toFloat(row.rating),
       m.runtime = row.runtime,
-      m.addedAt = datetime(row.addedAt)
-  // posterPath is deliberately not touched: only the optional TMDB sync sets it
+      m.addedAt = datetime(row.addedAt),
+      m.posterPath = coalesce(m.posterPath, '/posters/' + row.movieId + '.jpg')
 `;
 
 const MERGE_MOVIE_GENRES = `

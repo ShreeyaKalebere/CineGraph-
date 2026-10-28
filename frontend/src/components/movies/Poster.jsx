@@ -7,7 +7,8 @@ import { posterTheme, tmdbImage } from '../../utils/poster.js';
  */
 export default function Poster({ movie, size = 'w342', className = '', showTitle = true }) {
   const [failed, setFailed] = useState(false);
-  const src = tmdbImage(movie?.posterPath, size);
+  const posterPath = movie?.posterPath || (movie?.movieId || movie?.id ? `/posters/${movie.movieId || movie.id}.jpg` : null);
+  const src = tmdbImage(posterPath, size);
 
   if (src && !failed) {
     return (
