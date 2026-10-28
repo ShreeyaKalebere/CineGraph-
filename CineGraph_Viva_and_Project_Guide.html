@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CineGraph - Project Viva & Database Comprehensive Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1e293b;
+      line-height: 1.6;
+      font-size: 13.5px;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+    }
+
+    .cover {
+      page-break-after: always;
+      padding: 60px 40px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31104b 100%);
+      color: #ffffff;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(236, 72, 153, 0.2);
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      color: #f472b6;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .cover-title {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 25px 0 15px 0;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      font-weight: 400;
+      max-width: 650px;
+      margin-bottom: 30px;
+    }
+
+    .cover-meta {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px 24px;
+      border-radius: 10px;
+      backdrop-filter: blur(8px);
+    }
+
+    .cover-meta table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cover-meta td {
+      padding: 6px 10px;
+      color: #cbd5e1;
+      font-size: 13px;
+      border: none;
+    }
+
+    .cover-meta td.label {
+      font-weight: 600;
+      color: #f472b6;
+      width: 160px;
+    }
+
+    h1, h2, h3, h4 {
+      color: #0f172a;
+      font-weight: 700;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 24px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      color: #1e1b4b;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #4338ca;
+      margin-top: 22px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #334155;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+    }
+
+    .callout {
+      background: #f8fafc;
+      border-left: 4px solid #6366f1;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 13px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #4338ca;
+      margin-bottom: 4px;
+    }
+
+    .speech-box {
+      background: #faf5ff;
+      border-left: 4px solid #a855f7;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-style: italic;
+      color: #4c1d95;
+    }
+
+    .speech-box strong {
+      font-style: normal;
+      color: #581c87;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12.5px;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+      background: #f1f5f9;
+      color: #be185d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
+      page-break-inside: avoid;
+      margin: 14px 0;
+    }
+
+    pre code {
+      background: transparent;
+      color: #f8fafc;
+      padding: 0;
+    }
+
+    .keyword { color: #f472b6; font-weight: 600; }
+    .label-node { color: #38bdf8; }
+    .rel { color: #fbbf24; }
+    .comment { color: #64748b; font-style: italic; }
+    .fn { color: #a78bfa; }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .grid-2 {
+      display: flex;
+      gap: 14px;
+      margin: 14px 0;
+    }
+
+    .card {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #1e1b4b;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- COVER PAGE -->
+  <div class="cover">
+    <div>
+      <div class="cover-badge">Academic Project & Viva Defense Guide</div>
+      <h1 class="cover-title">CineGraph</h1>
+      <div class="cover-subtitle">
+        Graph-Powered Movie Recommendation & Knowledge Discovery Platform using Neo4j, Express, and React
+      </div>
+    </div>
+
+    <div class="cover-meta">
+      <table>
+        <tr>
+          <td class="label">Project Title:</td>
+          <td><strong>CineGraph (Graph-Based Movie Recommendations)</strong></td>
+        </tr>
+        <tr>
+          <td class="label">Database Technology:</td>
+          <td>Neo4j Graph Database (Cypher Query Language, Bolt Protocol)</td>
+        </tr>
+        <tr>
+          <td class="label">Backend Framework:</td>
+          <td>Node.js & Express (RESTful MVC Architecture)</td>
+        </tr>
+        <tr>
+          <td class="label">Frontend Stack:</td>
+          <td>React 18, Vite, Cytoscape.js, Recharts, Tailwind CSS</td>
+        </tr>
+        <tr>
+          <td class="label">Key Algorithms:</td>
+          <td>Collaborative Filtering (Jaccard Index), Content-Based (Genre), Cast & Crew Centrality, Hybrid Ensemble</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="font-size: 12px; color: #64748b; text-align: center;">
+      Prepared for Faculty Viva Voce & Laboratory Project Evaluation
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <h1>1. Executive Summary & 30-Second Elevator Pitch</h1>
+  <p>When presenting your project to your teacher or evaluation panel, begin with this confident opening:</p>
+  
+  <div class="speech-box">
+    <strong>"Good morning/afternoon, Ma'am:</strong><br>
+    Our project is <strong>CineGraph</strong>, a full-stack movie exploration and recommendation platform powered by <strong>Neo4j</strong>, <strong>Express</strong>, and <strong>React</strong>.<br><br>
+    Unlike conventional platforms like IMDb or Netflix that rely on relational tables with costly multi-table SQL joins, CineGraph treats movies, genres, actors, directors, and users as an <strong>interconnected Knowledge Graph</strong>.<br><br>
+    Using native graph traversals, we implement <strong>4 distinct recommendation algorithms</strong>—Collaborative Filtering, Genre Affinity, Cast & Crew Connectivity, and a weighted Hybrid Ensemble—with <strong>transparent, explainable evidence</strong> for every suggestion, paired with an interactive <strong>Cytoscape.js</strong> visual graph explorer."
+  </div>
+
+  <h1>2. Relational Database vs. Graph Database (The Core Problem)</h1>
+  <p>Professors frequently ask: <em>"Why Neo4j instead of MySQL, PostgreSQL, or MongoDB?"</em></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">Dimension</th>
+        <th style="width: 40%;">Relational Database (SQL)</th>
+        <th style="width: 40%;">Graph Database (Neo4j)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Data Storage</strong></td>
+        <td>Tables with Rows and Columns. Relationships are simulated using Foreign Keys and intermediate join tables.</td>
+        <td>Nodes (entities), Properties (attributes), and Relationships (edges) stored as first-class citizens.</td>
+      </tr>
+      <tr>
+        <td><strong>Relationship Traversal</strong></td>
+        <td><strong>Cartesian JOINs:</strong> Computes intersections by scanning foreign key indexes. Multi-hop queries cause <em>JOIN explosion</em>.</td>
+        <td><strong>Index-Free Adjacency:</strong> Each node holds direct memory pointers to adjacent edges. Traversal is constant time $O(1)$ per hop.</td>
+      </tr>
+      <tr>
+        <td><strong>Query Complexity</strong></td>
+        <td>Exponential complexity $O(N^k)$ where $N$ is table row count and $k$ is traversal depth.</td>
+        <td>Sub-graph localized complexity $O(d^k)$ where $d$ is average node degree. Total database size has zero impact.</td>
+      </tr>
+      <tr>
+        <td><strong>Query Language</strong></td>
+        <td>SQL (declarative tabular queries with nested subqueries).</td>
+        <td>Cypher (declarative pattern-matching language with visual ASCII art syntax).</td>
+      </tr>
+      <tr>
+        <td><strong>Schema Flexibility</strong></td>
+        <td>Rigid tabular schema; altering schema requires DDL migrations and table locks.</td>
+        <td>Flexible property graph model; new relationship types or properties can be added dynamically.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-title">The "JOIN Explosion" Explanation (Say This to Ma'am):</div>
+    "In SQL, finding movies liked by users who also loved films directed by the directors of movies I rated requires joining: 
+    <code>users &rarr; ratings &rarr; movie_directors &rarr; directors &rarr; movie_directors &rarr; movies &rarr; ratings &rarr; candidate_movies</code>. 
+    That requires <strong>7 expensive joins</strong>! In Neo4j, we simply traverse direct pointer references: <code>(u)-[:RATED]-&gt;(m)&lt;-[:DIRECTED]-(d)-[:DIRECTED]-&gt;(c)</code> in milliseconds."
+  </div>
+
+  <!-- SECTION 3: SCHEMA & GRAPH DATA MODEL -->
+  <div class="page-break"></div>
+  <h1>3. CineGraph Data Model & Graph Schema</h1>
+  <p>CineGraph models the cinematic domain as a labeled property graph containing <strong>5 Node Labels</strong> and <strong>7 Relationship Types</strong>:</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Node Labels (Entities)</div>
+      <ul style="margin: 0; padding-left: 18px; font-size: 12.5px;">
+        <li><strong><code>(:Movie)</code></strong>: 80 curated titles. Properties: <code>movieId</code>, <code>title</code>, <code>releaseYear</code>, <code>rating</code>, <code>runtime</code>, <code>overview</code>, <code>addedAt</code>.</li>
+        <li><strong><code>(:User)</code></strong>: 8 seeded demo personas. Properties: <code>userId</code>, <code>name</code>, <code>email</code>, <code>passwordHash</code>.</li>
+        <li><strong><code>(:Genre)</code></strong>: 15 categories (Sci-Fi, Thriller, Drama, etc.). Properties: <code>genreId</code>, <code>name</code>.</li>
+        <li><strong><code>(:Actor)</code></strong>: 178 notable actors. Properties: <code>actorId</code>, <code>name</code>.</li>
+        <li><strong><code>(:Director)</code></strong>: 41 filmmakers. Properties: <code>directorId</code>, <code>name</code>.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Relationships (Edges & Semantics)</div>
+      <ul style="margin: 0; padding-left: 18px; font-size: 12.5px;">
+        <li><code>(User)-[:RATED {rating, ratedAt}]-&gt;(Movie)</code></li>
+        <li><code>(User)-[:LIKED {likedAt}]-&gt;(Movie)</code></li>
+        <li><code>(User)-[:WATCHED {watchedAt}]-&gt;(Movie)</code></li>
+        <li><code>(User)-[:PREFERS]-&gt;(Genre)</code></li>
+        <li><code>(Movie)-[:IN_GENRE]-&gt;(Genre)</code></li>
+        <li><code>(Movie)-[:DIRECTED_BY]-&gt;(Director)</code></li>
+        <li><code>(Movie)-[:ACTED_IN {role}]-&gt;(Actor)</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Graph Database Statistics in Current Database:</h2>
+  <ul>
+    <li><strong>322 Total Nodes</strong> (80 Movies + 15 Genres + 178 Actors + 41 Directors + 8 Users)</li>
+    <li><strong>733 Total Relationships</strong> connecting all nodes seamlessly</li>
+    <li>Zero orphan nodes; all components form a cohesive connected knowledge network.</li>
+  </ul>
+
+  <h1>4. Schema Constraints & Range Indexes (Neo4j 5.x)</h1>
+  <p>To enforce relational integrity and guarantee lightning-fast query execution, we defined explicit schema rules:</p>
+
+  <h3>A. 7 Uniqueness Constraints:</h3>
+  <pre><code><span class="comment">// Neo4j 5 syntax: FOR (var:Label) REQUIRE var.property IS UNIQUE</span>
+<span class="keyword">CREATE CONSTRAINT</span> user_id_unique <span class="keyword">IF NOT EXISTS FOR</span> (u:<span class="label-node">User</span>) <span class="keyword">REQUIRE</span> u.userId <span class="keyword">IS UNIQUE</span>;
+<span class="keyword">CREATE CONSTRAINT</span> user_email_unique <span class="keyword">IF NOT EXISTS FOR</span> (u:<span class="label-node">User</span>) <span class="keyword">REQUIRE</span> u.email <span class="keyword">IS UNIQUE</span>;
+<span class="keyword">CREATE CONSTRAINT</span> movie_id_unique <span class="keyword">IF NOT EXISTS FOR</span> (m:<span class="label-node">Movie</span>) <span class="keyword">REQUIRE</span> m.movieId <span class="keyword">IS UNIQUE</span>;
+<span class="keyword">CREATE CONSTRAINT</span> genre_id_unique <span class="keyword">IF NOT EXISTS FOR</span> (g:<span class="label-node">Genre</span>) <span class="keyword">REQUIRE</span> g.genreId <span class="keyword">IS UNIQUE</span>;
+<span class="keyword">CREATE CONSTRAINT</span> actor_id_unique <span class="keyword">IF NOT EXISTS FOR</span> (a:<span class="label-node">Actor</span>) <span class="keyword">REQUIRE</span> a.actorId <span class="keyword">IS UNIQUE</span>;
+<span class="keyword">CREATE CONSTRAINT</span> director_id_unique <span class="keyword">IF NOT EXISTS FOR</span> (d:<span class="label-node">Director</span>) <span class="keyword">REQUIRE</span> d.directorId <span class="keyword">IS UNIQUE</span>;</code></pre>
+
+  <div class="callout">
+    <strong>Why this matters to the examiner:</strong><br>
+    Uniqueness constraints guarantee that <code>MERGE</code> operations never create duplicate records. Furthermore, Neo4j automatically creates an underlying B-Tree index for each constraint, enabling $O(1)$ node lookups by primary identifier.
+  </div>
+
+  <h3>B. 6 Range Indexes for Search & Filtering:</h3>
+  <pre><code><span class="keyword">CREATE INDEX</span> movie_title <span class="keyword">IF NOT EXISTS FOR</span> (m:<span class="label-node">Movie</span>) <span class="keyword">ON</span> (m.title);
+<span class="keyword">CREATE INDEX</span> movie_release_year <span class="keyword">IF NOT EXISTS FOR</span> (m:<span class="label-node">Movie</span>) <span class="keyword">ON</span> (m.releaseYear);
+<span class="keyword">CREATE INDEX</span> movie_rating <span class="keyword">IF NOT EXISTS FOR</span> (m:<span class="label-node">Movie</span>) <span class="keyword">ON</span> (m.rating);
+<span class="keyword">CREATE INDEX</span> actor_name <span class="keyword">IF NOT EXISTS FOR</span> (a:<span class="label-node">Actor</span>) <span class="keyword">ON</span> (a.name);
+<span class="keyword">CREATE INDEX</span> director_name <span class="keyword">IF NOT EXISTS FOR</span> (d:<span class="label-node">Director</span>) <span class="keyword">ON</span> (d.name);</code></pre>
+
+  <!-- SECTION 5: RECOMMENDATION ALGORITHMS -->
+  <div class="page-break"></div>
+  <h1>5. The Recommendation Engine: Algorithms & Cypher Queries</h1>
+  <p>CineGraph employs <strong>4 core strategies</strong> combined into an ensemble hybrid scoring model:</p>
+
+  <h2>Strategy 1: Collaborative Filtering (Jaccard Index)</h2>
+  <p>Discovers other users with overlapping taste and suggests unconsumed movies endorsed by them.</p>
+  
+  <div class="callout">
+    <strong>Mathematical Formulation:</strong><br>
+    Similarity between User $A$ and User $B$ is calculated using the <strong>Jaccard Similarity Index</strong> over their positive movie sets ($R \ge 4$ stars or liked):
+    $$\text{Similarity}(A, B) = \frac{|A \cap B|}{|A \cup B|} = \frac{|A \cap B|}{|A| + |B| - |A \cap B|}$$
+  </div>
+
+  <pre><code><span class="comment">// Cypher for User-to-User Jaccard Similarity</span>
+<span class="keyword">UNWIND</span> $seeds <span class="keyword">AS</span> seed
+<span class="keyword">MATCH</span> (s:<span class="label-node">Movie</span> {movieId: seed.movieId})&lt;-[r:<span class="rel">LIKED|RATED</span>]-(other:<span class="label-node">User</span>)
+<span class="keyword">WHERE</span> other.userId &lt;&gt; $userId <span class="keyword">AND</span> (type(r) = <span class="comment">'LIKED'</span> <span class="keyword">OR</span> r.rating &gt;= 4)
+<span class="keyword">WITH</span> other, collect(<span class="keyword">DISTINCT</span> s) <span class="keyword">AS</span> sharedMovies
+<span class="keyword">WHERE</span> size(sharedMovies) &gt;= $minSharedMovies
+
+<span class="comment">// Count other user's total positive library</span>
+<span class="keyword">MATCH</span> (other)-[r2:<span class="rel">LIKED|RATED</span>]-&gt;(p:<span class="label-node">Movie</span>)
+<span class="keyword">WHERE</span> type(r2) = <span class="comment">'LIKED'</span> <span class="keyword">OR</span> r2.rating &gt;= 4
+<span class="keyword">WITH</span> other, sharedMovies, count(<span class="keyword">DISTINCT</span> p) <span class="keyword">AS</span> otherPositiveCount
+
+<span class="comment">// Compute Jaccard coefficient</span>
+<span class="keyword">WITH</span> other, sharedMovies,
+     toFloat(size(sharedMovies)) / (size($seeds) + otherPositiveCount - size(sharedMovies)) <span class="keyword">AS</span> similarity
+<span class="keyword">RETURN</span> other.userId, other.name, similarity, [x <span class="keyword">IN</span> sharedMovies | x.title] <span class="keyword">AS</span> sharedTitles
+<span class="keyword">ORDER BY</span> similarity <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> 10;</code></pre>
+
+  <h2>Strategy 2: Content-Based Filtering (Genre Affinity)</h2>
+  <p>Aggregates user taste weights across genres from high-rated movies and explicit onboarding preferences.</p>
+  <pre><code><span class="comment">// Match unconsumed candidate movies sharing high-weight genres</span>
+<span class="keyword">UNWIND</span> $genreWeights <span class="keyword">AS</span> gw
+<span class="keyword">MATCH</span> (g:<span class="label-node">Genre</span> {genreId: gw.genreId})&lt;-[:<span class="rel">IN_GENRE</span>]-(c:<span class="label-node">Movie</span>)
+<span class="keyword">WHERE NOT</span> c.movieId <span class="keyword">IN</span> $excludeIds
+<span class="keyword">WITH</span> c, collect(g.name) <span class="keyword">AS</span> sharedGenres, sum(gw.weight) <span class="keyword">AS</span> genreRaw
+<span class="keyword">ORDER BY</span> genreRaw <span class="keyword">DESC</span>, c.rating <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> 20;</code></pre>
+
+  <h2>Strategy 3: Cast & Crew Connectivity (Two-Hop Traversal)</h2>
+  <p>Finds films sharing actors or directors that the user repeatedly praised in past ratings.</p>
+  <pre><code><span class="comment">// Traversal: Seed Movie &lt;-- Actor --&gt; Candidate Movie</span>
+<span class="keyword">UNWIND</span> $seeds <span class="keyword">AS</span> seed
+<span class="keyword">MATCH</span> (s:<span class="label-node">Movie</span> {movieId: seed.movieId})&lt;-[:<span class="rel">ACTED_IN</span>]-(a:<span class="label-node">Actor</span>)-[:<span class="rel">ACTED_IN</span>]-&gt;(c:<span class="label-node">Movie</span>)
+<span class="keyword">WHERE NOT</span> c.movieId <span class="keyword">IN</span> $excludeIds <span class="keyword">AND</span> c.movieId &lt;&gt; s.movieId
+<span class="keyword">WITH</span> c, a, max(seed.weight) <span class="keyword">AS</span> personWeight, collect(<span class="keyword">DISTINCT</span> s.title) <span class="keyword">AS</span> via
+<span class="keyword">WITH</span> c, collect({name: a.name, weight: personWeight, via: via}) <span class="keyword">AS</span> people, sum(personWeight) <span class="keyword">AS</span> raw
+<span class="keyword">RETURN</span> c.movieId, people, raw <span class="keyword">ORDER BY</span> raw <span class="keyword">DESC</span> <span class="keyword">LIMIT</span> 20;</code></pre>
+
+  <h2>Strategy 4: The Hybrid Scoring Ensemble</h2>
+  <p>Each independent signal is normalized between $0.0$ and $1.0$, and blended deterministically:</p>
+  $$\text{Final Score} = w_{\text{genre}} \cdot S_{\text{genre}} + w_{\text{people}} \cdot S_{\text{people}} + w_{\text{collab}} \cdot S_{\text{collab}} + w_{\text{rating}} \cdot S_{\text{rating}}$$
+  <p>Every recommendation produces an <strong>Explanation Proof</strong> indicating exactly which seed movie, genre, actor, or similar user triggered the suggestion.</p>
+
+  <!-- SECTION 6: ACID & ARCHITECTURE -->
+  <div class="page-break"></div>
+  <h1>6. ACID Compliance & Transaction Architecture</h1>
+  <p>When asked how the database maintains consistency and avoids deadlocks:</p>
+
+  <div class="card">
+    <div class="card-title">How Neo4j Implements ACID:</div>
+    <ul style="font-size: 12.5px; padding-left: 18px; margin: 0;">
+      <li><strong>Atomicity:</strong> Every Cypher statement executes inside a transaction. If any constraint fails, the entire transaction rolls back.</li>
+      <li><strong>Consistency:</strong> Schema constraints guarantee unique IDs and emails. Broken relationships cannot exist without source/target nodes.</li>
+      <li><strong>Isolation:</strong> Uses Read-Committed isolation with Multi-Version Concurrency Control (MVCC). Writers lock modified nodes/edges; readers never block writers.</li>
+      <li><strong>Durability:</strong> Every committed change is written to an append-only Write-Ahead Transaction Log (WAL) before acknowledging success.</li>
+    </ul>
+  </div>
+
+  <h2>Managed Transactions in Node.js (<code>backend/src/config/neo4j.js</code>)</h2>
+  <p>We distinguish between Read and Write transactions using the official Neo4j JavaScript Driver:</p>
+  <ul>
+    <li><strong><code>session.executeRead()</code></strong>: Used for recommendation retrieval, catalog search, and graph visualization. Read queries can be routed to read-replicas in a cluster.</li>
+    <li><strong><code>session.executeWrite()</code></strong>: Used for rating movies, adding favorites, and seeding nodes. Automatically handles transient connection retry policies.</li>
+  </ul>
+
+  <h1>7. Live Viva Voce Step-by-Step Demonstration Script</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 10%;">Step</th>
+        <th style="width: 25%;">Screen / Page</th>
+        <th style="width: 65%;">What to Demonstrate & Say to Ma'am</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Home Page</strong><br><code>http://localhost:5173</code></td>
+        <td>"Ma'am, here is the CineGraph landing interface. It dynamically loads featured movies, top-rated films, and trending titles directly from Neo4j."</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Explore Page</strong><br><code>/explore</code></td>
+        <td>"This is our catalog explorer with debounced instant search and multi-facet filtering (Genre, Year, Minimum Rating). Notice the instant response time enabled by our Neo4j Range Indexes."</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td><strong>Graph Explorer</strong><br><code>/graph</code></td>
+        <td><strong>(Crucial Step!)</strong> "This is our interactive Cytoscape.js knowledge graph. Each node represents an entity. Clicking on 'Inception' visually highlights connected nodes: Director (Christopher Nolan), Actors (Leonardo DiCaprio), and Genres (Sci-Fi, Thriller)."</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td><strong>Login</strong><br><code>/login</code></td>
+        <td>Log in using: <code>aarav@cinegraph.demo</code> / <code>Demo@1234</code>.<br>"Aarav is our pre-configured persona who loves Christopher Nolan and Sci-Fi movies."</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td><strong>Recommendations</strong><br><code>/recommendations</code></td>
+        <td>"Here are the personalized recommendations for Aarav. Look at films like <em>'The Prestige'</em> and <em>'Blade Runner 2049'</em>. Clicking <strong>'Why recommended?'</strong> displays the transparent evidence: matching director, high genre overlap, and similar user endorsements."</td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td>
+        <td><strong>Analytics</strong><br><code>/analytics</code></td>
+        <td>"Here we use Recharts to display graph aggregate analytics: rating distributions, top connected actors, and community trends calculated directly via Cypher aggregation functions."</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 8: CHEAT SHEET -->
+  <div class="page-break"></div>
+  <h1>8. Top 10 Rapid-Fire Viva Questions & Master Answers</h1>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q1: What is Cypher, and how does it compare to SQL?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> Cypher is Neo4j’s declarative graph query language. While SQL relies on tabular algebra and complex nested JOINs, Cypher uses visual pattern matching (e.g. <code>(u)-[:RATED]-&gt;(m)</code>) optimized for traversing pointer structures.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q2: What is the Cold Start problem, and how did you solve it?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> A cold start occurs when a brand-new user has no interaction history, preventing collaborative filtering. We solve this by having new users select initial genre preferences during onboarding (<code>User-[:PREFERS]-&gt;Genre</code>) and defaulting to high-centrality, top-rated movies until they provide ratings.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q3: What is the difference between `CREATE` and `MERGE` in Cypher?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> <code>CREATE</code> unconditionally inserts a new node or relationship every time, which can create duplicates. <code>MERGE</code> checks if the pattern already exists; if found, it binds to it; if not found, it creates it (acting like an atomic <code>UPSERT</code>).
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q4: What protocol does your backend use to talk to Neo4j?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> We use the official binary <strong>Bolt Protocol</strong> on port <strong>7687</strong>. Bolt is a connection-oriented, multiplexed binary protocol that avoids the overhead of JSON serialization over HTTP.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q5: How do you prevent Cypher Injection attacks?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> We never concatenate raw user input strings into Cypher queries. All inputs are passed as strictly typed <strong>query parameters</strong> (e.g., <code>$userId</code>, <code>$excludeIds</code>), ensuring inputs are parsed as literals, never as executable Cypher clauses.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q6: How do you ensure already watched movies are not recommended?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> We first aggregate all movies connected to the user via <code>[:RATED]</code>, <code>[:LIKED]</code>, or <code>[:WATCHED]</code> into an <code>$excludeIds</code> array, and enforce <code>WHERE NOT candidate.movieId IN $excludeIds</code> in every recommendation query.
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 12px;">
+    <strong>Q7: What is Degree Centrality in the context of your graph?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> Degree Centrality measures the number of relationships incident to a node. High-degree actors (e.g. Leonardo DiCaprio) and directors act as key topological bridges in the graph connecting otherwise distant movie clusters.
+    </p>
+  </div>
+
+  <div class="card">
+    <strong>Q8: What security practices did you implement on the web tier?</strong>
+    <p style="margin: 4px 0 0 0; font-size: 12.5px;">
+      <em>Answer:</em> We implemented: (1) <code>bcryptjs</code> salted password hashing, (2) JWT tokens stored in <code>HttpOnly</code>, <code>SameSite=lax</code> cookies to eliminate XSS token theft, (3) Helmet security headers, (4) Express rate limiters on authentication routes, and (5) schema validation with <code>express-validator</code>.
+    </p>
+  </div>
+
+</body>
+</html>
